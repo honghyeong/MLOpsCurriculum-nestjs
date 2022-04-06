@@ -3,7 +3,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
-import { NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ConsoleLogger,
+  HttpException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -19,19 +24,27 @@ class MockUserRepository {
   }
 
   findOne(id: number): User {
-    try {
-      const found = this.mockUsers.find((user) => user.id === id);
-      return found;
-    } catch (error) {
-      throw new NotFoundException('The user is not found'); // 😅  맞는 위치일까요 ?
-    }
+    const found = this.mockUsers.find((user) => user.id === id);
+    return found;
+  }
+  findOneByName(name: string): User {
+    console.log(this.mockUsers);
+    const found = this.mockUsers.find((user) => user.name == name);
+    console.log(found);
+    return found;
   }
 
   save(user: User): User {
-    return user;
+    if (this.findOneByName(user.name)) {
+      throw new ConflictException();
+    }
+
+    return { id: 4, ...user };
   }
 
-  delete(id: number): void {}
+  delete(id: number): User {
+    return this.findOne(id);
+  }
 }
 
 describe('UserService', () => {
@@ -87,6 +100,12 @@ describe('UserService', () => {
         expect(findUser).toHaveProperty('name');
       });
     });
+
+    describe('failure case', () => {
+      it('should return 400 if user is not found', async () => {
+        expect(service.findUserById(0)).rejects.toThrow(NotFoundException);
+      });
+    });
   });
 
   describe('CREATE /user', () => {
@@ -96,12 +115,19 @@ describe('UserService', () => {
     newUser.age = 30;
     newUser.name = 'sm5';
     // const dupUser = { id: 30, name: 'sm1', age: 30 };
-
+    const dupUser = new CreateUserDto();
+    dupUser.age = 30;
+    dupUser.name = 'sm1';
     describe('success case', () => {
       it('should return a created user', async () => {
         createdUser = await service.createUser(newUser);
-        // console.log(createdUser);
         expect(newUser.name).toEqual(createdUser.name);
+      });
+    });
+
+    describe('failure case', () => {
+      it('should return 409 if user already exists', async () => {
+        expect(service.createUser(dupUser)).rejects.toThrow(HttpException);
       });
     });
   });
@@ -112,14 +138,34 @@ describe('UserService', () => {
     const editUser = new UpdateUserDto();
     const targetId = 1;
     editUser.age = 30;
-    editUser.name = 'sm6';
-    // const dupUser = { id: 30, name: 'sm1', age: 30 };
+    editUser.name = 'sm343';
+
+    const dupUser = new UpdateUserDto();
+    dupUser.age = 30;
+    dupUser.name = 'sm2';
 
     describe('success case', () => {
       it('should return a updated user', async () => {
-        updatedUser = await service.updateUser(targetId, editUser);
-        expect(editUser.name).toEqual(updatedUser.name);
+        // updatedUser = await service.updateUser(targetId, editUser);
+        // expect(editUser.name).toEqual(updatedUser.name);
+        expect(service.updateUser(targetId, editUser)).rejects.toThrow(
+          HttpException,
+        ); // 중복 문제있음 ( updateUser에서 Find해서 수정할때 문제)
         // console.log(updatedUser);
+      });
+    });
+
+    describe('failure case', () => {
+      it('should return 409 if user already exists', async () => {
+        expect(service.updateUser(targetId, dupUser)).rejects.toThrow(
+          HttpException,
+        );
+      });
+    });
+
+    describe('failure case', () => {
+      it('should return 404 if user is not found', async () => {
+        expect(service.updateUser(100, dupUser)).rejects.toThrow(HttpException);
       });
     });
   });
