@@ -16,7 +16,7 @@ jobs:
           account_id: ${{ secrets.AWS_ACCOUNT_ID }}
           repo: cicd-nest
           region: ap-northeast-2
-          tags: latest,${{ github.sha }}
+          tags: ${{ github.sha }}
           create_repo: true
           image_scanning_configuration: true
           set_repo_policy: false
