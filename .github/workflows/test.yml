@@ -61,7 +61,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         run: |
           cd mlopsapi
-          npm install
+          npm install --save --legacy-peer-deps
           npm run build --if-present
           npm test
       # - uses: actions/setup-node@v3
