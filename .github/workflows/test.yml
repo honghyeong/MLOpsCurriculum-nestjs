@@ -15,10 +15,10 @@ jobs:
           cd mlopsapi
           npm install --save --legacy-peer-deps
           npm run build
-      - uses: actions/upload-artifact@main
+      - uses: actions/upload-artifact@v3
         with:
-          name: webpack artifacts
-          path: public/
+          name: my-artifact
+          # path: public/
   test:
     needs: build
     runs-on: ubuntu-latest
@@ -28,16 +28,17 @@ jobs:
         node-version: [12.x, 14.x]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@main
+      - uses: actions/download-artifact@v3
         with:
-          name: webpack artifacts
-          path: public
+          name: my-artifact
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - name: npm install, and test
         run: |
+          cd mlopsapi
           npm install
           npm test
         env:
