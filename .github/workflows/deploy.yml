@@ -46,7 +46,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: cicd-nest
+          ECR_REPOSITORY: cicd-test
           IMAGE_TAG: ${{ github.sha }}
         run: |
 
