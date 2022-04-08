@@ -1,8 +1,6 @@
 name: Main Push ECR Delpoy
 
-on:
-  push:
-    branches: [main]
+on: [push]
 
 # jobs:
 #   build-and-push:
