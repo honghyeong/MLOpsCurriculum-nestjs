@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     restart: always
   nest:
-    build: ./mlopsapi
+    # build: ./mlopsapi
     image: 499340242396.dkr.ecr.ap-northeast-2.amazonaws.com/nest-mlops-server
     # platform: linux/amd64
     environment:
