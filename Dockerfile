@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY mlopsapi/*.json ./
 # COPY mlopspai/*.lock ./
-RUN yarn install --save --legacy-peer-deps
+RUN yarn install --force
 
 COPY . .
 
