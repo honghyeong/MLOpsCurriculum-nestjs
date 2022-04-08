@@ -2,8 +2,8 @@ FROM node:14-alpine
 
 WORKDIR /usr/src/app
 
-COPY *.json ./
-COPY *.lock ./
+COPY ./mlopsapi/*.json ./
+COPY ./mlopspai/*.lock ./
 RUN yarn install 
 
 COPY . .
