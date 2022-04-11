@@ -83,7 +83,7 @@ jobs:
           ECS_SERVICE: ${{env.ECS_SERVICE}}
           # ECS_SERVICE: ${{env.ECS_SERVICE}}
         run: |
-          aws ecs describe-task-definition --task-definition ${ECS_SERVICE} --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition $ECS_SERVICE --query taskDefinition > task-definition.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
