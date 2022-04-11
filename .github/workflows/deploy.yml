@@ -25,8 +25,9 @@
 #    and best practices on handling the access key credentials.
 name: Deploy to Amazon ECS
 on:
-  branches:
-    - feature/cicd-ecr
+  push:
+    branches:
+      - feature/cicd-ecr
   # [push]
   # branches:
   #   - main
