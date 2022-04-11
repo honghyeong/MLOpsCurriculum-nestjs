@@ -79,8 +79,8 @@ jobs:
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Download task definition
-        run: aws ecs describe-task-definition --task-definition $ECS_SERVICE \
-          --query taskDefinition > $ECS_TASK_DEFINITION
+        run: |
+          aws ecs describe-task-definition --task-definition $ECS_SERVICE --query taskDefinition > $ECS_TASK_DEFINITION
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
