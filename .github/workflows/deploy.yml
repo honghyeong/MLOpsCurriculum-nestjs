@@ -27,7 +27,9 @@
 name: Deploy to Amazon ECS
  
 on:
-  [push]
+  branches:
+    - feature/cicd-ecr
+  # [push]
   # branches:
   #   - main
  
