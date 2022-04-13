@@ -8,7 +8,7 @@ on:
   push:
     branches: [feature/pulumi]
     paths-ignore:
-      - "index.ts"
+      - "infra/index.ts"
 
 jobs:
   build:
