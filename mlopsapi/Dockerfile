@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY *.json ./
 COPY *.lock ./
 RUN yarn install --force
+# RUN yarn install
 
 COPY . .
 

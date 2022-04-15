@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +12,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger('UserService');
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
@@ -22,6 +24,7 @@ export class UserService {
   async findUserById(id: number): Promise<User> {
     const user = await this.userRepository.findOne(id);
     if (!user) {
+      this.logger.log('The user is not found');
       throw new NotFoundException('The user is not found');
     }
     return user;
@@ -36,8 +39,10 @@ export class UserService {
       return await this.userRepository.save(newUser);
     } catch (error) {
       if (error.code === '23505') {
+        this.logger.log('The user already exists');
         throw new ConflictException('The user already exists');
       } else {
+        this.logger.log('Server error');
         throw new InternalServerErrorException();
       }
     }
@@ -55,8 +60,10 @@ export class UserService {
       return await this.userRepository.save(target);
     } catch (error) {
       if (error.code === '23505') {
+        this.logger.log('The user already exists');
         throw new ConflictException('The user already exists');
       } else {
+        this.logger.log('Server error');
         throw new InternalServerErrorException();
       }
     }
@@ -72,6 +79,7 @@ export class UserService {
       .execute();
 
     if (target.affected === 0) {
+      this.logger.log('The user is not found');
       throw new NotFoundException('The user is not found');
     }
     // await this.userRepository.remove(target);

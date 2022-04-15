@@ -21,13 +21,12 @@ export class CustomValidationPipe implements PipeTransform<any> {
     // console.log(object);
     const errors = await validate(object);
     // console.log(errors);
-    if (errors[0].constraints['isNotEmpty']) {
-      this.logger.log('name parameter is empty');
-      throw new BadRequestException('name parameter is empty');
-    }
 
-    if (errors[0].constraints['isInt']) {
-      this.logger.error('age must be an integer');
+    if (errors.length > 0 && errors[0].constraints['isNotEmpty']) {
+      this.logger.log('"name" parameter is empty');
+      throw new BadRequestException('name parameter is empty');
+    } else if (errors.length > 0 && errors[0].constraints['isInt']) {
+      this.logger.error('"age" must be an integer');
       throw new BadRequestException('age must be an integer');
     }
     // if (errors.length > 0) {
