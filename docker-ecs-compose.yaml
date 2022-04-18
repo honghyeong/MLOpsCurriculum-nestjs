@@ -12,7 +12,7 @@ services:
     restart: always
   nest:
     # build: ./mlopsapi
-    image: 499340242396.dkr.ecr.ap-northeast-2.amazonaws.com/nest-mlops-server
+    image: 499340242396.dkr.ecr.ap-northeast-2.amazonaws.com/nest-mlops-monitoring
     # platform: linux/amd64
     environment:
       DB_PORT: ${DB_PORT}

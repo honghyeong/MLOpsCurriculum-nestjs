@@ -5,7 +5,9 @@ import { config } from 'dotenv';
 const port = cf.get('service').port;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn'],
+  });
   await app.listen(port);
 }
 bootstrap();
